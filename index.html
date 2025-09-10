@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sbl STINGRAY V4 Advanced Deriv Trading Bot </title>
+    <title>sbl STINGRAY V4 Advanced Deriv Trading Bot</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -135,6 +135,101 @@
                             <option value="candlestick">Candlestick</option>
                         </select>
                     </div>
+                    <!-- New Indicator & Candle Settings Subsection -->
+                    <details>
+                        <summary>Indicator & Candle Settings</summary>
+                        <div class="form-group">
+                            <label for="rsi-period">RSI Period:</label>
+                            <input type="number" id="rsi-period" value="14" min="5" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="ma-period">MA Period:</label>
+                            <input type="number" id="ma-period" value="20" min="5" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="bollinger-period">Bollinger Period:</label>
+                            <input type="number" id="bollinger-period" value="20" min="5" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="bollinger-multiplier">Bollinger Multiplier:</label>
+                            <input type="number" id="bollinger-multiplier" value="2" min="1" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label for="macd-fast">MACD Fast Period:</label>
+                            <input type="number" id="macd-fast" value="12" min="5" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="macd-slow">MACD Slow Period:</label>
+                            <input type="number" id="macd-slow" value="26" min="10" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="macd-signal">MACD Signal Period:</label>
+                            <input type="number" id="macd-signal" value="9" min="3" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="stochastic-period">Stochastic Period:</label>
+                            <input type="number" id="stochastic-period" value="14" min="5" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="stochastic-smooth">Stochastic Smooth:</label>
+                            <input type="number" id="stochastic-smooth" value="3" min="1" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="adx-period">ADX Period:</label>
+                            <input type="number" id="adx-period" value="14" min="5" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="volatility-period">Volatility Period:</label>
+                            <input type="number" id="volatility-period" value="20" min="5" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="sentiment-period">Sentiment Period:</label>
+                            <input type="number" id="sentiment-period" value="10" min="5" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="atr-period">ATR Period:</label>
+                            <input type="number" id="atr-period" value="14" min="5" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="cci-period">CCI Period:</label>
+                            <input type="number" id="cci-period" value="20" min="5" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="vwap-period">VWAP Period:</label>
+                            <input type="number" id="vwap-period" value="20" min="5" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="correlation-length">Correlation Length:</label>
+                            <input type="number" id="correlation-length" value="50" min="10" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="max-candles">Max Candles:</label>
+                            <input type="number" id="max-candles" value="1000" min="100" step="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="doji-threshold">Doji Threshold (%):</label>
+                            <input type="number" id="doji-threshold" value="0.1" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="trend-period">Trend Period:</label>
+                            <input type="number" id="trend-period" value="20" min="5" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="volatility-spike-threshold">Volatility Spike Threshold (%):</label>
+                            <input type="number" id="volatility-spike-threshold" value="5" min="0" step="0.1">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label><input type="checkbox" id="debug-enabled"> Enable Debug Logging</label>
+                        </div>
+                    </details>
+                    <div class="form-group">
+                        <label for="chart-indicators">Chart Indicators:</label>
+                        <select id="chart-indicators" multiple>
+                            <option value="ma">Moving Average</option>
+                            <option value="bollinger">Bollinger Bands</option>
+                            <option value="vwap">VWAP</option>
+                        </select>
+                    </div>
                     <div class="form-group checkbox-group">
                         <label><input type="checkbox" id="stop-loss-enabled" checked> Enable Stop Loss</label>
                         <label><input type="checkbox" id="take-profit-enabled" checked> Enable Take Profit</label>
@@ -251,6 +346,18 @@
                         <div class="stat" title="Market Sentiment">
                             <span class="stat-label">Sentiment:</span>
                             <span id="sentiment-value" class="stat-value">0.00</span>
+                        </div>
+                        <div class="stat" title="Average True Range">
+                            <span class="stat-label">ATR:</span>
+                            <span id="atr-value" class="stat-value">0.00000</span>
+                        </div>
+                        <div class="stat" title="Commodity Channel Index">
+                            <span class="stat-label">CCI:</span>
+                            <span id="cci-value" class="stat-value">0.00</span>
+                        </div>
+                        <div class="stat" title="Volume-Weighted Average Price">
+                            <span class="stat-label">VWAP:</span>
+                            <span id="vwap-value" class="stat-value">0.00000</span>
                         </div>
                     </div>
                 </section>
@@ -379,16 +486,12 @@
             type: chartType,
             data: {
                 labels: [],
-                datasets: chartType === 'candlestick' ? [{
+                datasets: [{
                     label: 'Price',
                     data: [],
                     borderColor: 'var(--chart-color)',
-                    backgroundColor: (ctx) => ctx.raw && ctx.raw.y[3] >= ctx.raw.y[0] ? 'rgba(40, 167, 69, 0.5)' : 'rgba(220, 53, 69, 0.5)'
-                }] : [{
-                    label: 'Price',
-                    data: [],
-                    borderColor: 'var(--chart-color)',
-                    tension: 0.1
+                    backgroundColor: (ctx) => ctx.raw && ctx.raw.y && ctx.raw.y[3] >= ctx.raw.y[0] ? 'rgba(40, 167, 69, 0.5)' : 'rgba(220, 53, 69, 0.5)',
+                    tension: chartType === 'line' ? 0.1 : 0
                 }]
             },
             options: {
@@ -400,32 +503,113 @@
             }
         });
 
-        // Update chart with candle data
+        // Update chart with candle data and optional indicators
         function updatePriceChart(candles, symbol) {
             if (!candles || !candles.length) return;
             const candle = candles.find(c => c.symbol === symbol) || candles[candles.length - 1];
             const timestamp = new Date(candle.timestamp).toLocaleTimeString();
-            if (chartType === 'candlestick') {
-                priceChart.data.labels.push(timestamp);
-                priceChart.data.datasets[0].data.push({
-                    x: timestamp,
-                    y: [candle.open, candle.high, candle.low, candle.close]
+            const indicators = window.derivBot.indicatorManager.getIndicators();
+            const selectedIndicators = Array.from(document.getElementById('chart-indicators').selectedOptions).map(opt => opt.value);
+
+            // Reset datasets
+            priceChart.data.datasets = [{
+                label: 'Price',
+                data: [],
+                borderColor: 'var(--chart-color)',
+                backgroundColor: (ctx) => ctx.raw && ctx.raw.y && ctx.raw.y[3] >= ctx.raw.y[0] ? 'rgba(40, 167, 69, 0.5)' : 'rgba(220, 53, 69, 0.5)',
+                tension: chartType === 'line' ? 0.1 : 0
+            }];
+
+            // Add indicator datasets
+            if (selectedIndicators.includes('ma')) {
+                priceChart.data.datasets.push({
+                    label: 'Moving Average',
+                    data: [],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'transparent',
+                    type: 'line',
+                    tension: 0.1,
+                    pointRadius: 0
                 });
-            } else {
-                priceChart.data.labels.push(timestamp);
-                priceChart.data.datasets[0].data.push(candle.close);
             }
-            if (priceChart.data.labels.length > 50) {
-                priceChart.data.labels.shift();
-                priceChart.data.datasets[0].data.shift();
+            if (selectedIndicators.includes('bollinger')) {
+                priceChart.data.datasets.push(
+                    {
+                        label: 'Bollinger Upper',
+                        data: [],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'transparent',
+                        type: 'line',
+                        tension: 0.1,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Bollinger Middle',
+                        data: [],
+                        borderColor: 'rgba(75, 192, 192, 0.5)',
+                        backgroundColor: 'transparent',
+                        type: 'line',
+                        tension: 0.1,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Bollinger Lower',
+                        data: [],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'transparent',
+                        type: 'line',
+                        tension: 0.1,
+                        pointRadius: 0
+                    }
+                );
             }
+            if (selectedIndicators.includes('vwap')) {
+                priceChart.data.datasets.push({
+                    label: 'VWAP',
+                    data: [],
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    backgroundColor: 'transparent',
+                    type: 'line',
+                    tension: 0.1,
+                    pointRadius: 0
+                });
+            }
+
+            // Update data
+            const recentCandles = window.derivBot.candleManager.getCandles(symbol).slice(-50);
+            priceChart.data.labels = recentCandles.map(c => new Date(c.timestamp).toLocaleTimeString());
+            priceChart.data.datasets[0].data = chartType === 'candlestick'
+                ? recentCandles.map(c => ({ x: new Date(c.timestamp).toLocaleTimeString(), y: [c.open, c.high, c.low, c.close] }))
+                : recentCandles.map(c => c.close);
+
+            // Update indicator data
+            recentCandles.forEach((c, i) => {
+                const slice = recentCandles.slice(0, i + 1);
+                window.derivBot.indicatorManager.updateIndicators(slice);
+                const ind = window.derivBot.indicatorManager.getIndicators();
+                let datasetIndex = 1;
+                if (selectedIndicators.includes('ma')) {
+                    priceChart.data.datasets[datasetIndex].data.push(ind.movingAverage);
+                    datasetIndex++;
+                }
+                if (selectedIndicators.includes('bollinger')) {
+                    priceChart.data.datasets[datasetIndex].data.push(ind.bollingerBands.upper);
+                    priceChart.data.datasets[datasetIndex + 1].data.push(ind.bollingerBands.middle);
+                    priceChart.data.datasets[datasetIndex + 2].data.push(ind.bollingerBands.lower);
+                    datasetIndex += 3;
+                }
+                if (selectedIndicators.includes('vwap')) {
+                    priceChart.data.datasets[datasetIndex].data.push(ind.vwap);
+                }
+            });
+
             priceChart.update();
         }
 
         // Reset chart
         document.getElementById('reset-chart-btn')?.addEventListener('click', () => {
             priceChart.data.labels = [];
-            priceChart.data.datasets[0].data = [];
+            priceChart.data.datasets.forEach(dataset => dataset.data = []);
             priceChart.update();
             window.derivBot.log('Chart reset', 'info');
         });
@@ -434,21 +618,78 @@
         document.getElementById('chart-type')?.addEventListener('change', (e) => {
             chartType = e.target.value;
             priceChart.config.type = chartType;
-            priceChart.data.datasets = chartType === 'candlestick' ? [{
+            priceChart.data.datasets = [{
                 label: 'Price',
                 data: [],
                 borderColor: 'var(--chart-color)',
-                backgroundColor: (ctx) => ctx.raw && ctx.raw.y[3] >= ctx.raw.y[0] ? 'rgba(40, 167, 69, 0.5)' : 'rgba(220, 53, 69, 0.5)'
-            }] : [{
-                label: 'Price',
-                data: [],
-                borderColor: 'var(--chart-color)',
-                tension: 0.1
+                backgroundColor: (ctx) => ctx.raw && ctx.raw.y && ctx.raw.y[3] >= ctx.raw.y[0] ? 'rgba(40, 167, 69, 0.5)' : 'rgba(220, 53, 69, 0.5)',
+                tension: chartType === 'line' ? 0.1 : 0
             }];
+            const selectedIndicators = Array.from(document.getElementById('chart-indicators').selectedOptions).map(opt => opt.value);
+            if (selectedIndicators.includes('ma')) {
+                priceChart.data.datasets.push({
+                    label: 'Moving Average',
+                    data: [],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'transparent',
+                    type: 'line',
+                    tension: 0.1,
+                    pointRadius: 0
+                });
+            }
+            if (selectedIndicators.includes('bollinger')) {
+                priceChart.data.datasets.push(
+                    {
+                        label: 'Bollinger Upper',
+                        data: [],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'transparent',
+                        type: 'line',
+                        tension: 0.1,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Bollinger Middle',
+                        data: [],
+                        borderColor: 'rgba(75, 192, 192, 0.5)',
+                        backgroundColor: 'transparent',
+                        type: 'line',
+                        tension: 0.1,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Bollinger Lower',
+                        data: [],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'transparent',
+                        type: 'line',
+                        tension: 0.1,
+                        pointRadius: 0
+                    }
+                );
+            }
+            if (selectedIndicators.includes('vwap')) {
+                priceChart.data.datasets.push({
+                    label: 'VWAP',
+                    data: [],
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    backgroundColor: 'transparent',
+                    type: 'line',
+                    tension: 0.1,
+                    pointRadius: 0
+                });
+            }
             priceChart.update();
             window.derivBot.log(`Chart type changed to ${chartType}`, 'info');
             const candles = window.derivBot.candleManager.getCandles(window.derivBot.config.symbol);
             candles.forEach(candle => updatePriceChart([candle], window.derivBot.config.symbol));
+        });
+
+        // Chart indicators toggle
+        document.getElementById('chart-indicators')?.addEventListener('change', () => {
+            const candles = window.derivBot.candleManager.getCandles(window.derivBot.config.symbol);
+            updatePriceChart(candles, window.derivBot.config.symbol);
+            window.derivBot.log('Chart indicators updated', 'info');
         });
 
         // Theme toggle
@@ -490,7 +731,7 @@
         });
 
         // Reset configuration
-        document.getElementById('reset-config-btn').addEventListener('click', () => {
+        document.getElementById('reset-config-btn')?.addEventListener('click', () => {
             const defaults = {
                 'strategy-select': 'martingale',
                 'symbols': ['R_10'],
@@ -509,16 +750,40 @@
                 'custom-strategy-rules': '[]',
                 'candle-timeframe': 60,
                 'chart-type': 'line',
+                'rsi-period': 14,
+                'ma-period': 20,
+                'bollinger-period': 20,
+                'bollinger-multiplier': 2,
+                'macd-fast': 12,
+                'macd-slow': 26,
+                'macd-signal': 9,
+                'stochastic-period': 14,
+                'stochastic-smooth': 3,
+                'adx-period': 14,
+                'volatility-period': 20,
+                'sentiment-period': 10,
+                'atr-period': 14,
+                'cci-period': 20,
+                'vwap-period': 20,
+                'correlation-length': 50,
+                'max-candles': 1000,
+                'doji-threshold': 0.1,
+                'trend-period': 20,
+                'volatility-spike-threshold': 5,
                 'stop-loss-enabled': true,
                 'take-profit-enabled': true,
                 'multi-timeframe': true,
                 'dynamic-switching': true,
-                'use-candle-patterns': true
+                'use-candle-patterns': true,
+                'debug-enabled': false,
+                'chart-indicators': []
             };
 
             Object.entries(defaults).forEach(([id, value]) => {
                 const element = document.getElementById(id);
                 if (element.tagName === 'SELECT' && id === 'symbols') {
+                    Array.from(element.options).forEach(opt => opt.selected = value.includes(opt.value));
+                } else if (element.tagName === 'SELECT' && id === 'chart-indicators') {
                     Array.from(element.options).forEach(opt => opt.selected = value.includes(opt.value));
                 } else if (element.tagName === 'INPUT' && element.type === 'checkbox') {
                     element.checked = value;
@@ -528,6 +793,31 @@
             });
 
             window.derivBot.updateConfig();
+            window.derivBot.indicatorManager.updateConfig({
+                rsiPeriod: parseInt(document.getElementById('rsi-period').value),
+                maPeriod: parseInt(document.getElementById('ma-period').value),
+                bollingerPeriod: parseInt(document.getElementById('bollinger-period').value),
+                bollingerMultiplier: parseFloat(document.getElementById('bollinger-multiplier').value),
+                macdFast: parseInt(document.getElementById('macd-fast').value),
+                macdSlow: parseInt(document.getElementById('macd-slow').value),
+                macdSignal: parseInt(document.getElementById('macd-signal').value),
+                stochasticPeriod: parseInt(document.getElementById('stochastic-period').value),
+                stochasticSmooth: parseInt(document.getElementById('stochastic-smooth').value),
+                adxPeriod: parseInt(document.getElementById('adx-period').value),
+                volatilityPeriod: parseInt(document.getElementById('volatility-period').value),
+                sentimentPeriod: parseInt(document.getElementById('sentiment-period').value),
+                atrPeriod: parseInt(document.getElementById('atr-period').value),
+                cciPeriod: parseInt(document.getElementById('cci-period').value),
+                vwapPeriod: parseInt(document.getElementById('vwap-period').value),
+                correlationLength: parseInt(document.getElementById('correlation-length').value),
+                debug: document.getElementById('debug-enabled').checked
+            });
+            window.derivBot.candleManager.updateConfig({
+                maxCandles: parseInt(document.getElementById('max-candles').value),
+                dojiThreshold: parseFloat(document.getElementById('doji-threshold').value),
+                trendPeriod: parseInt(document.getElementById('trend-period').value),
+                volatilitySpikeThreshold: parseFloat(document.getElementById('volatility-spike-threshold').value)
+            });
             window.derivBot.log('Configuration reset to defaults', 'info');
         });
     </script>
