@@ -31,7 +31,15 @@ class AdvancedDerivBot {
 
         // Market data
         this.currentPrice = 0;
-        this.candleManager = new CandleManager({ timeframe: 60 });
+        this.candleManager = new CandleManager({
+            timeframe: 60,
+            maxCandles: 100,
+            dojiThreshold: 0.1,
+            shadowMultiplier: 2,
+            smallShadowMultiplier: 0.5,
+            longBodyThreshold: 0.6,
+            enableTrendCheck: true
+        });
         this.indicatorManager = new IndicatorManager();
 
         // Trading configuration
@@ -58,7 +66,13 @@ class AdvancedDerivBot {
             trailingProfitThreshold: 0.5,
             useCandlePatterns: true,
             candleTimeframe: 60,
-            chartType: 'line'
+            chartType: 'line',
+            maxCandles: 100,
+            dojiThreshold: 0.1,
+            shadowMultiplier: 2,
+            smallShadowMultiplier: 0.5,
+            longBodyThreshold: 0.6,
+            enableTrendCheck: true
         };
 
         // Trading state management
@@ -144,7 +158,8 @@ class AdvancedDerivBot {
             'max-consecutive-losses', 'cooldown-period', 'position-sizing',
             'fixed-fraction', 'custom-strategy-rules', 'multi-timeframe',
             'dynamic-switching', 'use-candle-patterns', 'candle-timeframe',
-            'chart-type'
+            'chart-type', 'max-candles', 'doji-threshold', 'shadow-multiplier',
+            'small-shadow-multiplier', 'long-body-threshold', 'enable-trend-check'
         ];
 
         configInputs.forEach(id => {
@@ -203,11 +218,28 @@ class AdvancedDerivBot {
             this.config.useDynamicSwitching = getValue('dynamic-switching', 'boolean') !== null ? getValue('dynamic-switching', 'boolean') : this.config.useDynamicSwitching;
             this.config.useCandlePatterns = getValue('use-candle-patterns', 'boolean') !== null ? getValue('use-candle-patterns', 'boolean') : this.config.useCandlePatterns;
             this.config.candleTimeframe = getValue('candle-timeframe', 'integer') || this.config.candleTimeframe;
-            this.config.chartType = getValue('chart-type') || this.config.chartType;
+            this.config.maxCandles = getValue('max-candles', 'integer') || this.config.maxCandles;
+            this.config.dojiThreshold = getValue('doji-threshold', 'number') || this.config.dojiThreshold;
+            this.config.shadowMultiplier = getValue('shadow-multiplier', 'number') || this.config.shadowMultiplier;
+            this.config.smallShadowMultiplier = getValue('small-shadow-multiplier', 'number') || this.config.smallShadowMultiplier;
+            this.config.longBodyThreshold = getValue('long-body-threshold', 'number') || this.config.longBodyThreshold;
+            this.config.enableTrendCheck = getValue('enable-trend-check', 'boolean') !== null ? getValue('enable-trend-check', 'boolean') : this.config.enableTrendCheck;
 
             this.initialStake = parseFloat((getValue('stake', 'number') || this.initialStake).toFixed(1));
             this.currentStake = this.initialStake;
-            this.candleManager.setTimeframe(this.config.candleTimeframe);
+
+            // Update CandleManager with new configuration
+            this.candleManager = new CandleManager({
+                timeframe: this.config.candleTimeframe,
+                maxCandles: this.config.maxCandles,
+                dojiThreshold: this.config.dojiThreshold,
+                shadowMultiplier: this.config.shadowMultiplier,
+                smallShadowMultiplier: this.config.smallShadowMultiplier,
+                longBodyThreshold: this.config.longBodyThreshold,
+                enableTrendCheck: this.config.enableTrendCheck
+            });
+            // Re-initialize symbols to prevent data loss
+            this.config.symbols.forEach(symbol => this.candleManager.initializeSymbol(symbol));
 
             this.log(`Configuration updated: ${this.config.strategy} strategy on ${this.config.symbols.join(', ')}`, 'info');
         } catch (error) {
@@ -463,7 +495,7 @@ class AdvancedDerivBot {
             const pattern = this.candleManager.detectPattern(symbol);
             signal.shouldTrade = this.confirmSignalWithPattern(signal.tradeType, pattern);
             if (signal.shouldTrade) {
-                this.log(`Trade confirmed with pattern: ${pattern || 'None'}`, 'info');
+                this.log(`Trade confirmed with pattern: ${pattern?.name || 'None'} (Confidence: ${(pattern?.confidence || 0).toFixed(2)})`, 'info');
             } else {
                 this.log(`Trade skipped: No confirming candle pattern for ${signal.tradeType}`, 'warning');
             }
@@ -475,15 +507,15 @@ class AdvancedDerivBot {
     /**
      * Confirm trade signal with candle patterns
      * @param {string} tradeType - Trade type (CALL/PUT)
-     * @param {string} pattern - Detected candle pattern
+     * @param {Object|null} pattern - Detected candle pattern { name, type, confidence }
      * @returns {boolean} Whether signal is confirmed
      */
     confirmSignalWithPattern(tradeType, pattern) {
         if (!pattern) return false;
         return (
-            (tradeType === 'CALL' && ['BullishEngulfing', 'Hammer', 'MorningStar'].includes(pattern)) ||
-            (tradeType === 'PUT' && ['BearishEngulfing', 'ShootingStar'].includes(pattern)) ||
-            pattern === 'Doji'
+            (tradeType === 'CALL' && ['BullishEngulfing', 'Hammer', 'MorningStar', 'InvertedHammer'].includes(pattern.name)) ||
+            (tradeType === 'PUT' && ['BearishEngulfing', 'ShootingStar', 'EveningStar', 'HangingMan'].includes(pattern.name)) ||
+            pattern.name === 'Doji'
         );
     }
 
@@ -492,7 +524,6 @@ class AdvancedDerivBot {
      * @returns {Object} Trading signal
      */
     getMartingaleSignal() {
-        // Enhanced: Use existing RSI strategy for dynamic tradeType instead of config.tradeType
         return this.getRSISignal();
     }
 
@@ -501,7 +532,6 @@ class AdvancedDerivBot {
      * @returns {Object} Trading signal
      */
     getDalembertSignal() {
-        // Enhanced: Use existing RSI strategy for dynamic tradeType instead of config.tradeType
         return this.getRSISignal();
     }
 
@@ -667,7 +697,6 @@ class AdvancedDerivBot {
             }
         });
 
-        // Enhanced: Determine tradeType dynamically using MACD histogram instead of config.tradeType
         return {
             shouldTrade: conditionsMet,
             tradeType: conditionsMet ? (indicators.macd.histogram > 0 ? 'CALL' : 'PUT') : 'CALL'
@@ -745,7 +774,6 @@ class AdvancedDerivBot {
 
         this.adjustStakeBasedOnStrategy();
 
-        // Enhanced: Predict duration dynamically instead of using fixed config.duration
         const predictedDuration = this.predictDuration();
 
         const proposalRequest = {
@@ -908,10 +936,9 @@ class AdvancedDerivBot {
                 symbol: buy.symbol
             };
 
-            // After contract purchase success
             notifyContractPurchase({
                 symbol: "R_100",
-                contractType: "CALL",
+                contractType: buy.shortcode,
                 contractId: buy.contract_id,
                 buyPrice: buy.buy_price,
                 expectedPayout: 19.50,
@@ -1008,7 +1035,6 @@ class AdvancedDerivBot {
                 const simulatedStake = parseFloat(this.calculateOptimalStake().toFixed(1));
                 const profit = outcome === 'win' ? simulatedStake * 0.85 - fee : -simulatedStake - fee;
                 simulatedPnL += profit;
-                if (outcome === 'win') simulatedWins++;
                 this.log(`Backtest trade: ${signal.tradeType} - ${outcome}, P&L: $${profit.toFixed(2)}`, 'info');
             }
         });
@@ -1159,7 +1185,7 @@ class AdvancedDerivBot {
                 'adx-value': indicators.adx.toFixed(2),
                 'obv-value': indicators.obv.toFixed(2),
                 'sentiment-value': indicators.sentiment.toFixed(2),
-                'candle-pattern': pattern || 'None',
+                'candle-pattern': pattern ? `${pattern.name} (${(pattern.confidence * 100).toFixed(1)}%)` : 'None',
                 'candle-open': latestCandle.open ? latestCandle.open.toFixed(5) : '-',
                 'candle-high': latestCandle.high ? latestCandle.high.toFixed(5) : '-',
                 'candle-low': latestCandle.low ? latestCandle.low.toFixed(5) : '-',
@@ -1524,7 +1550,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateConfigCheckbox('take-profit-enabled', config.takeProfitEnabled);
                 updateConfigCheckbox('use-candle-patterns', config.useCandlePatterns);
                 updateConfigElement('candle-timeframe', config.candleTimeframe || 60);
-                updateConfigElement('chart-type', config.chartType || 'line');
+                updateConfigElement('max-candles', config.maxCandles || 100);
+                updateConfigElement('doji-threshold', config.dojiThreshold || 0.1);
+                updateConfigElement('shadow-multiplier', config.shadowMultiplier || 2);
+                updateConfigElement('small-shadow-multiplier', config.smallShadowMultiplier || 0.5);
+                updateConfigElement('long-body-threshold', config.longBodyThreshold || 0.6);
+                updateConfigCheckbox('enable-trend-check', config.enableTrendCheck);
 
                 window.derivBot.log('Configuration loaded from saved settings', 'info');
             } catch (error) {
