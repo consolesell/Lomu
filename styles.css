@@ -10,6 +10,9 @@
     --card-background: #fff;
     --border-color: #dee2e6;
     --chart-color: #007bff;
+    --ma-color: #ff6384;
+    --bollinger-color: #4bc0c0;
+    --vwap-color: #9966ff;
     --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
@@ -25,6 +28,9 @@
     --card-background: #2c2c2c;
     --border-color: #444;
     --chart-color: #f39c12;
+    --ma-color: #ff6384;
+    --bollinger-color: #4bc0c0;
+    --vwap-color: #9966ff;
     --shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
@@ -84,6 +90,11 @@ h1 {
 
 details {
     margin-bottom: 10px;
+}
+
+details details {
+    margin-left: 20px;
+    margin-bottom: 0;
 }
 
 summary {
@@ -208,7 +219,7 @@ summary:hover {
 /* Stats Grid */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 15px;
     margin-top: 10px;
 }
