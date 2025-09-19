@@ -936,17 +936,6 @@ class AdvancedDerivBot {
                 symbol: buy.symbol
             };
 
-            notifyContractPurchase({
-                symbol: "R_100",
-                contractType: buy.shortcode,
-                contractId: buy.contract_id,
-                buyPrice: buy.buy_price,
-                expectedPayout: 19.50,
-                duration: "60s",
-                entrySpot: this.currentPrice,
-                barrier: 1235.00
-            });
-
             this.sendMessage({
                 proposal_open_contract: 1,
                 contract_id: buy.contract_id,
