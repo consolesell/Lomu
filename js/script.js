@@ -147,7 +147,7 @@ class AdvancedDerivBot {
             this.log(`App ID updated: ${this.appId}`, 'debug');
         });
         addListener('api-token', 'change', (e) => {
-            this.apiToken = parseInt(e.target.value) || pfm6nudgLi4aNys;
+            this.apiToken = e.target.value.trim();
             this.log('API token updated', 'debug');
         });
 
